@@ -267,7 +267,32 @@ class Map extends Component {
                     
                 
                 map.on('load', function () {
+                  map.addSource('national-park', {
+                    'type': 'geojson',
+                    'data': polyjson
                   
+                    });
+                    map.addLayer({
+                      'id': 'park-boundary',
+                      'type': 'fill',
+                      'source': 'national-park',
+                      'paint': {
+                      'fill-color': '#888888',
+                      'fill-opacity': 0.4
+                      },
+                      'filter': ['==', '$type', 'Polygon']
+                      });
+                       
+                      map.addLayer({
+                      'id': 'park-volcanoes',
+                      'type': 'circle',
+                      'source': 'national-park',
+                      'paint': {
+                      'circle-radius': 6,
+                      'circle-color': '#B42222'
+                      },
+                      'filter': ['==', '$type', 'Point']
+                      });
                     
                     map.addLayer({
                         'id': 'routee',
@@ -298,6 +323,60 @@ class Map extends Component {
 
                     
                 });
+                var polyjson={
+                  "type": "FeatureCollection",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {},
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -108.369140625,
+                              50.84757295365389
+                            ],
+                            [
+                              -104.853515625,
+                              44.465151013519616
+                            ],
+                            [
+                              -94.21875,
+                              45.706179285330855
+                            ],
+                            [
+                              -95.97656249999999,
+                              51.39920565355378
+                            ],
+                            [
+                              -103.71093749999999,
+                              52.696361078274485
+                            ],
+                            [
+                              -100.283203125,
+                              52.5897007687178
+                            ],
+                            [
+                              -108.984375,
+                              51.01375465718821
+                            ],
+                            [
+                              -108.369140625,
+                              50.84757295365389
+                            ]
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+                // ***********
+                
+                   
+                  
+
+                // ***********
                   
     
                 var geojsonn = {
