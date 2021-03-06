@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactMapGL from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import IonRangeSlider from 'react-ion-slider';
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import $ from 'jquery'; 
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -41,6 +42,8 @@ class Map extends Component {
                 center: [this.state.lng, this.state.lat],
                 zoom: this.state.zoom
                 });
+                var Draw = new MapboxDraw();
+                map.addControl(Draw, 'top-left');
 
                 this.setState(Object.assign({}, this.state, {}), () => {
                   this.ionSliderAS &&
@@ -461,7 +464,7 @@ class Map extends Component {
         return (
           
         <div >
-        <div ref={x=>this.mapContainer=x} className="map-container" style={{height:"1000"}}/>
+        <div ref={x=>this.mapContainer=x} className="map-container" style={{height:"100%"}}/>
         <div>
         
         <IonRangeSlider ref={r => this.ionSliderGS = r} skin={'round'} type={'single'} min={1} max={60} from={3} to={'max'} max_postfix={' kilometer'} onFinish={this.handleChangeGS} />            
