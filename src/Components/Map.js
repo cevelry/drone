@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
-import ReactMapGL from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import IonRangeSlider from 'react-ion-slider';
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import $ from 'jquery'; 
+import MapboxDraw from "@mapbox/mapbox-gl-draw"; 
+// import turf from '@turf/turf'
+import * as turf from '@turf/turf'
+
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 mapboxgl.accessToken="pk.eyJ1IjoibWV0ZWF0YnMiLCJhIjoiY2themZ4b3JiMDFpbTJwcW9xd2Jyd2VjbSJ9.leTu0R3rhRiKxcrTdc0vnw"
+
 class Map extends Component {
     
+
+  
     constructor(props) {
+      
         // this.map.on=this.map.on.bind(this)
         super(props);
         this.state = {
+          event:null,
         lng: -87.686656,
         lat: 41.438203,
         zoom: 4,
         curLat:'',
         curLong:'',
-        gonderimsuresi:0
+        gonderimsuresi:0,
+        kilometer:1,
+        list:''
         
         };
         this.handleChangeGS = this.handleChangeGS.bind(this);
@@ -30,11 +38,19 @@ class Map extends Component {
           this.setState({
               gonderimsuresi: event.from
           })
-          this.setState({ SaveButtonHide: "visible" });
+          this.setState({
+            "status":event.from
+          })
       }
+      
+      
         
         
         componentDidMount() {
+          // this.setState({kilometer:this.state.gonderimsuresi})
+          
+          //         console.log(this.state.kilometer)
+                  
             // const map = this.state;
             var map = new mapboxgl.Map({
                 container: this.mapContainer,
@@ -43,140 +59,19 @@ class Map extends Component {
                 zoom: this.state.zoom
                 });
                 var Draw = new MapboxDraw();
-                map.addControl(Draw, 'top-left');
+                map.addControl(Draw, 'top-right');
+                
 
                 this.setState(Object.assign({}, this.state, {}), () => {
                   this.ionSliderAS &&
                       this.ionSliderAS.update({ from: this.state.gonderimsuresi })
               });
+              
 
-                console.log(this.state.gonderimsuresi)
+                // console.log(this.state.gonderimsuresi)
                
 
-                // map.on('click', function(e) {
-                //     // The event object (e) contains information like the
-                //     // coordinates of the point on the map that was clicked.
-                //     let loc=e.lngLat
-                //     var locLng=loc.lng
-                //     var locLat=loc.lat
-                //     console.log('loc : '+JSON.stringify(locLng))
-    
-                //     console.log('loc : '+JSON.stringify(locLat))
-                    
-                //     // this.setState({curLong:e.lngLat.lng})
-                //     // this.setState({curLat:e.lngLat.lat})
-                //     // console.log('fired '+this.state.curLat)
-                //     if (map.getLayer("routee")) {
-                //         map.removeLayer("routee");
-                //         map.removeSource('routee')
-
-                //     }
-                //     if (map.getLayer("route")) {
-                //         map.removeLayer("route");
-                //         map.removeSource('route')
-
-                //     }
-                    
-                //     // map.removeLayer('route')
-                //     // map.removeSource('route');
-                //     map.addLayer({
-                //         'id': 'route',
-                //         'type': 'line',
-                //         'source': {
-                //             type: 'geojson',
-                //             data: geojson
-                //         },
-                //         'paint': {
-                //             // data-driven style for line color
-                //             'line-color': {
-                //                 property: 'color',
-                //                 type: 'identity'
-                //             },
-                //             //data-driven style for line offset
-                //             'line-offset': {
-                //                 property: 'Order',
-                //                 type: 'categorical',
-                //                 stops: [
-                //                     [1, 0],
-                //                     [2, 3],
-                //                     [3, 6]
-                //                   ]
-                //             },
-                //             'line-width': 3
-                //         }
-                //     });
-                //     var geojson = {
-                //         "type": "FeatureCollection",
-                //         "features": [
-                //           {
-                //             "type": "Feature",
-                //             "properties": {
-                //               "Order": 1,
-                //               "color": "#000000"
-                //             },
-                //             "geometry": {
-                //               "type": "LineString",
-                //               "coordinates": [
-                //                 [
-                //                   -89.4034069776535,
-                //                   43.075526006595695
-                                  
-                //                 ],
-                //                 [
-                //                   -89.4014060497284,
-                //                   43.075306572387284
-                //                 ]
-                //               ]
-                //             }
-                //           },
-                //           {
-                //             "type": "Feature",
-                //             "properties": {
-                //               "Order": 2,
-                //               "color": "#000000"
-                //             },
-                //             "geometry": {
-                //               "type": "LineString",
-                //               "coordinates": [
-                //                 [
-                //                   -83.040912,
-                //                   40.392980
-                //                 ],
-                //                 [
-                //                   -86.471080,
-                //                   41.385767
-                //                 ]
-                //               ]
-                //             }
-                //           },
-                //           {
-                //             "type": "Feature",
-                //             "properties": {
-                //               "Order": 3,
-                //               "color": "#000000"
-                //             },
-                //             "geometry": {
-                //               "type": "LineString",
-                //               "coordinates": [
-                //                 [
-                //                   -88.4034069776535,
-                //                   40.895564
-                //                 ],
-                //                 [
-                //                   -90.002670,
-                //                   40.914553
-                //                 ]
-                //               ]
-                //             }
-                //           }
-                //         ]
-                //       };
-
-
-                //     // console.log('A click event has occurred at ' + e.lngLat);
-
-                    
-                //     });
+                
                 function RemoveMapLayer() {
                     var mpLayer = map.getLayer("point");
                     if (typeof mpLayer === 'undefined') {
@@ -193,8 +88,83 @@ class Map extends Component {
                     }
                 }
                 
-
+                
                 map.on('click', function(event) {
+                  var getPolData=Draw.getAll().features[0]
+                  // console.log(getPolData.geometry)
+                  
+                  // console.log(Draw.getAll())
+                  
+                  
+                  
+                  if (getPolData!=null) {
+                   
+                    // getPolData.geometry
+                    var polyObject={
+                      'type':getPolData.type,
+                      "properties":getPolData.properties,
+                      "geometry":{
+                        "type":getPolData.geometry.type,
+                        "coordinates":[getPolData.geometry.coordinates]
+                      }
+                    }
+                    // console.log('polyObject : '+polyObject.geometry.coordinates)
+                    var poCor=polyObject.geometry.coordinates
+                    // console.log(poCor)
+                    if (poCor!=undefined) {
+                      
+                    }
+                    // console.log('getpoldata'+JSON.stringify(turf.polygonToLine(getPolData)))
+                  var converted=turf.polygonToLine(getPolData)
+                  // console.log('converted:'+converted)
+                    // var convertedToLine=turf.polygonToLine(poCor)
+                    // console.log('converted : '+convertedToLine)
+                  }
+                  var lineObject={
+                    "type": "Feature",
+                    "properties": {
+                      "Order": 1,
+                      "color": "#000000"
+                    },
+                    "geometry": {
+                      "type": "MultiLineString",
+                      "coordinates": [
+                        [
+                          [event.lngLat.lng+10, event.lngLat.lat+1],
+                          [event.lngLat.lng-10, event.lngLat.lat+1]
+                      ],
+                      [
+                       [event.lngLat.lng-10, event.lngLat.lat+2],
+                       [event.lngLat.lng+10, event.lngLat.lat+2]
+                     ]
+                     ]
+                  
+                    }
+                  
+              
+             }
+             if (lineObject!=undefined && converted!=undefined) {
+              // let intersectionPoints = turf.intersect(lineObject, polyjson);
+              
+              let intersectionPoints = turf.lineIntersect(lineObject, converted);
+              // console.log(intersectionPoints)
+              let intersectionPointsArray = intersectionPoints.features.map(d => {return d.geometry.coordinates});
+              console.log('Filtered Points '+intersectionPointsArray)
+              // let intersection = turf.lineSlice(turf.point(intersectionPointsArray[0]), turf.point(intersectionPointsArray[1]), lineObject);
+              // console.log('intersection : '+intersection)
+             }
+                  
+                  // console.log(polyObject)
+                  
+                    lineObject.geometry.coordinates.forEach(part => {
+                    // console.log(turf.lineString(part))
+                      // let split=turf.lineSplit(turf.lineString(part), polyObject);
+                      let oddPair;
+                      
+                    });
+                  
+                  
+                  
                     // if (map.getLayer("point")!=undefined) {
                     //     map.removeLayer("point");
                         
@@ -270,6 +240,8 @@ class Map extends Component {
                     
                 
                 map.on('load', function () {
+                  
+                  
                   map.addSource('national-park', {
                     'type': 'geojson',
                     'data': polyjson
@@ -453,9 +425,6 @@ class Map extends Component {
                
             
             }
-            componentDidUpdate(){
-              
-            }
             
 
     render() {
@@ -464,13 +433,19 @@ class Map extends Component {
         return (
           
         <div >
-        <div ref={x=>this.mapContainer=x} className="map-container" style={{height:"100%"}}/>
+        {
         <div>
         
+          
+        <div>
         <IonRangeSlider ref={r => this.ionSliderGS = r} skin={'round'} type={'single'} min={1} max={60} from={3} to={'max'} max_postfix={' kilometer'} onFinish={this.handleChangeGS} />            
                             </div>
                             <button type="button" style={{ "width": "120px" }} onClick={() => { this.surelerkaydet() }}>Hesapla</button>
+                            <div ref={x=>this.mapContainer=x} className="map-container"style={{height:"50vh"}} />
         </div>
+        }
+        </div>
+        
         
         );
         }

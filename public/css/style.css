@@ -1,0 +1,30 @@
+.mapbox-gl-draw_ctrl-draw-btn {
+    height: 30px;
+width: 75px;
+margin: 5px;
+}
+
+.mapbox-gl-draw_trash::before{
+content: "remove";
+}
+
+.mapbox-gl-draw_point::before{
+    content: "point";
+}
+.mapbox-gl-draw_line::before{
+    content: "line";
+}
+.mapbox-gl-draw_polygon::before{
+    content: "polygon";
+}
+.mapbox-gl-draw_combine::before{
+    content: "combine";
+}
+.mapbox-gl-draw_uncombine::before{
+    content: "uncombine";
+}
+.mapboxgl-ctrl-attrib-button::before{
+    content: "toggle";
+    height: 30px;
+    width: 70px;
+}
