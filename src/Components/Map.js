@@ -87,12 +87,27 @@ class Map extends Component {
                         map.removeSource("point_source");
                     }
                 }
+                function RemovePolyIntersection() {
+                  var mpLayerr = map.getLayer("maine");
+                  if (typeof mpLayerr === 'undefined') {
+                      // No Layer
+                  } else {
+                      map.removeLayer("maine");
+                  }
+          
+                  var mpSourcee = map.getSource("mainee");
+                  if (typeof mpSourcee === 'undefined') {
+                      // alert("no source");
+                  } else {
+                      map.removeSource("mainee");
+                  }
+              }
                 
                 
                 map.on('click', function(event) {
                   var getPolData=Draw.getAll().features[0]
                   // console.log(getPolData.geometry)
-                  
+                  // console.log(this.state)
                   // console.log(Draw.getAll())
                   
                   
@@ -108,7 +123,7 @@ class Map extends Component {
                         "coordinates":[getPolData.geometry.coordinates]
                       }
                     }
-                    // console.log('polyObject : '+polyObject.geometry.coordinates)
+                    // console.log('polyObject : '+JSON.stringify(polyObject))
                     var poCor=polyObject.geometry.coordinates
                     // console.log(poCor)
                     if (poCor!=undefined) {
@@ -128,31 +143,64 @@ class Map extends Component {
                     },
                     "geometry": {
                       "type": "MultiLineString",
-                      "coordinates": [
-                        [
+                      "coordinates": [[
+                        
                           [event.lngLat.lng+10, event.lngLat.lat+1],
                           [event.lngLat.lng-10, event.lngLat.lat+1]
-                      ],
-                      [
+                      ,
+                      
                        [event.lngLat.lng-10, event.lngLat.lat+2],
                        [event.lngLat.lng+10, event.lngLat.lat+2]
-                     ]
-                     ]
+                     
+                      ]]
                   
                     }
                   
               
              }
-             if (lineObject!=undefined && converted!=undefined) {
-              // let intersectionPoints = turf.intersect(lineObject, polyjson);
-              
-              let intersectionPoints = turf.lineIntersect(lineObject, converted);
-              // console.log(intersectionPoints)
-              let intersectionPointsArray = intersectionPoints.features.map(d => {return d.geometry.coordinates});
-              console.log('Filtered Points '+intersectionPointsArray)
-              // let intersection = turf.lineSlice(turf.point(intersectionPointsArray[0]), turf.point(intersectionPointsArray[1]), lineObject);
-              // console.log('intersection : '+intersection)
+            //  console.log(lineObject.geometry.coordinates)
+            //  console.log(turf.lineToPolygon(lineObject))
+             var polyLine=turf.lineToPolygon(lineObject)
+             if (polyObject!=undefined && polyLine!=undefined) {
+              var turfIntersect = turf.intersect(polyObject, polyLine);
              }
+            
+             RemovePolyIntersection()
+             if (turfIntersect) {
+              // turfIntersect.properties={
+              //   "fill": "#FF0000",
+              //   "stroke": "#FF0000",
+              //   "stroke-width": 1
+              //  }
+              //  map.addSource(turfIntersect)
+              
+              map.addSource('mainee',{
+                'type': 'geojson',
+                'data':turfIntersect
+                
+              })
+                  map.addLayer({
+                'id': 'maine',
+                'type': 'fill',
+                'source': 'mainee',
+                'layout': {},
+                'paint': {
+                'fill-color': '#000536',
+                'fill-opacity': 0.8
+                }
+                });
+             }
+             console.log('turf intersect : '+JSON.stringify(turfIntersect))
+            //  if (lineObject!=undefined && converted!=undefined) {
+            //   // let intersectionPoints = turf.intersect(lineObject, polyjson);
+              
+            //   let intersectionPoints = turf.lineIntersect(lineObject, converted);
+            //   // console.log(intersectionPoints)
+            //   let intersectionPointsArray = intersectionPoints.features.map(d => {return d.geometry.coordinates});
+            //   console.log('Filtered Points '+intersectionPointsArray)
+            //   // let intersection = turf.lineSlice(turf.point(intersectionPointsArray[0]), turf.point(intersectionPointsArray[1]), lineObject);
+            //   // console.log('intersection : '+intersection)
+            //  }
                   
                   // console.log(polyObject)
                   
